@@ -1,0 +1,4 @@
+wwwroot\css\app.css
+wwwroot\index.html
+C:\githubProjects\MovieTracker\MovieTracker\wwwroot\css\app.css
+C:\githubProjects\MovieTracker\MovieTracker\wwwroot\index.html
