@@ -1,5 +1,22 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
-<h1>Hello, world!</h1>
+<h1>This is the movie tracker!</h1>
 
-Welcome to your new app.
+We tracka da movies <br/>
+<button @onclick="IncrementCount">@currentCount</button> <br/>
+<button @onclick="NavigateToTracker">Go to the tracker</button>
+
+@code {
+	private int currentCount = 0;
+
+	private void IncrementCount()
+	{
+		currentCount++;
+	}
+
+	private void NavigateToTracker()
+	{
+		NavigationManager.NavigateTo("/tracker");
+	}
+}
