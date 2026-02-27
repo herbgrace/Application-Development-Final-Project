@@ -1,0 +1,61 @@
+﻿@page "/movies"
+@inject MovieTracker.Services.TMDBService MovieService
+@inject NavigationManager NavigationManager
+@using MovieTracker.Models
+
+<h1>All Movies</h1>
+
+
+@if (movies == null)
+{
+    <p>Loading movies...</p>
+}
+else if (!movies.Any())
+{
+    <p>No movies found.</p>
+}
+else
+{
+    <button @onclick="NavigateToHome">Go Back to Home</button>
+    <ul>
+        @foreach (var movie in movies)
+        {
+            <li>
+                <strong>@movie.Title</strong><br />
+                @movie.Overview
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    //must have the list like this idk why it just doesnt work if i do List<Movie> movies
+    List<MovieTracker.Models.Movie>? movies;
+    string debugMessage = "";
+
+    //debug message
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var result = await MovieService.GetPopularMovies();
+
+
+            movies = result?.Results;
+
+            if (movies == null || movies.Count == 0)
+                debugMessage = "No movies returned from TMDB.";
+            else
+                debugMessage = $"Movies loaded: {movies.Count}";
+        }
+        catch (Exception ex)
+        {
+            debugMessage = $"Error: {ex.Message}";
+        }
+    }
+
+    public void NavigateToHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

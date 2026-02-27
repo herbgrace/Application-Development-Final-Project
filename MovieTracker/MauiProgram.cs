@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Hosting;
+using MovieTracker.Services;
+using System.Net.Http;
 
 namespace MovieTracker
 {
@@ -7,6 +10,7 @@ namespace MovieTracker
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
+
             builder
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
@@ -14,14 +18,16 @@ namespace MovieTracker
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 });
 
+            builder.Services.AddScoped<TMDBService>();
+            builder.Services.AddScoped(sp => new HttpClient());
+
             builder.Services.AddMauiBlazorWebView();
 
 #if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
-    		builder.Logging.AddDebug();
+            builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();
         }
-    }
-}
+    }}

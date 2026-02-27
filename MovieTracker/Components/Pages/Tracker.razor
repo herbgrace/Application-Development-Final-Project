@@ -1,6 +1,7 @@
 ﻿@page "/tracker"
 @inject NavigationManager NavigationManager
 @using MovieTracker.Components
+@using MovieTracker.Controllers
 
 <h1>Tracker</h1>
 
@@ -9,7 +10,7 @@ Welcome to the tracker!!!
 <button @onclick="NavigateToHome">Go Back to Home</button>
 @foreach (var movie in TrackerController.movies)
 {
-	<li>@movie.Name</li>
+	<li>@movie.Title</li>
 }
 
 @code {

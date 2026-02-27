@@ -1,22 +1,20 @@
 ﻿@page "/"
 @inject NavigationManager NavigationManager
 
-<h1>This is the movie tracker!</h1>
+<h1>Welcome to Movie Tracker!</h1>
 
-We tracka da movies <br/>
-<button @onclick="IncrementCount">@currentCount</button> <br/>
-<button @onclick="NavigateToTracker">Go to the tracker</button>
+<p>Click below to go to the tracker and fetch movies from TMDB.</p>
+
+<button @onclick="NavigateToTracker">Go to Tracker</button>
+<button @onclick="NavigateToMovies">Go to Movies</button>
 
 @code {
-	private int currentCount = 0;
+    void NavigateToTracker()
+    {
+        NavigationManager.NavigateTo("/tracker");
+    }
 
-	private void IncrementCount()
-	{
-		currentCount++;
-	}
-
-	private void NavigateToTracker()
-	{
-		NavigationManager.NavigateTo("/tracker");
-	}
-}
+    void NavigateToMovies()
+    {
+        NavigationManager.NavigateTo("/movies");
+    }}
