@@ -5,16 +5,16 @@
 
 <p>Click below to go to the tracker and fetch movies from TMDB.</p>
 
-<button @onclick="NavigateToTracker">Go to Tracker</button>
+<button @onclick="NavigateToTracker">Go to Watchlist</button>
 <button @onclick="NavigateToMovies">Go to Movies</button>
 
 @code {
     void NavigateToTracker()
     {
-        NavigationManager.NavigateTo("/tracker");
+        NavigationManager.NavigateTo("/watchlist");
     }
 
     void NavigateToMovies()
     {
-        NavigationManager.NavigateTo("/movies");
+        NavigationManager.NavigateTo("/popularmovies");
     }}

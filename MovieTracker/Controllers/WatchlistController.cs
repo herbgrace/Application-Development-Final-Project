@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MovieTracker.Controllers
 {
-    static class TrackerController
+    static class WatchlistController
     {
         public static List<Movie> movies = new List<Movie>() {
             new Movie()
@@ -21,5 +21,10 @@ namespace MovieTracker.Controllers
                 Title = "Interstellar"
             }
         };
+
+        public static void addMovie(string title)
+        {
+            movies.Add(new Movie() { Title = title });
+        }
     }
 }

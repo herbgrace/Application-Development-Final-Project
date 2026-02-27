@@ -1,14 +1,14 @@
-﻿@page "/tracker"
+﻿@page "/watchlist"
 @inject NavigationManager NavigationManager
 @using MovieTracker.Components
 @using MovieTracker.Controllers
 
-<h1>Tracker</h1>
+<h1>Watchlist</h1>
 
 Welcome to the tracker!!!
 
 <button @onclick="NavigateToHome">Go Back to Home</button>
-@foreach (var movie in TrackerController.movies)
+@foreach (var movie in WatchlistController.movies)
 {
 	<li>@movie.Title</li>
 }
