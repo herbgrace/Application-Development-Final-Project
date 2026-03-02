@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Hosting;
 using MovieTracker.Services;
 using System.Net.Http;
+using System.Reflection;
 
 namespace MovieTracker
 {
@@ -9,6 +11,8 @@ namespace MovieTracker
     {
         public static MauiApp CreateMauiApp()
         {
+            DotNetEnv.Env.Load("auth.env");
+
             var builder = MauiApp.CreateBuilder();
 
             builder

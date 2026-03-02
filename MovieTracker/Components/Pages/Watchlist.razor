@@ -3,18 +3,31 @@
 @using MovieTracker.Components
 @using MovieTracker.Controllers
 
-<h1>Watchlist</h1>
+<div class="watchlist-header">
+    <h1>Watchlist</h1>
+    Welcome to your watchlist!
+    <button @onclick="NavigateToHome">Go Back to Home</button>
+</div>
 
-Welcome to the tracker!!!
-
-<button @onclick="NavigateToHome">Go Back to Home</button>
-@foreach (var movie in WatchlistController.movies)
-{
-	<li>@movie.Title</li>
-}
+<div class="movie-container">
+    <ul class="movie-list">
+    @foreach (var movie in WatchlistController.movies)
+        {
+            <li>
+                <strong>@movie.Title</strong>
+	            <InputCheckbox @bind-Value="movie.Watched" @onchange="() => changeWatched(movie)"></InputCheckbox>
+                <br/>
+            </li>
+        }
+    </ul>
+    <p>This should be the db URL! -> @Environment.GetEnvironmentVariable("DB_URL") (hopefully no blank before this)
+</p>
+</div>
 
 @code {
-	public void NavigateToHome() {
-		NavigationManager.NavigateTo("/");
-	}
+    public void NavigateToHome() {
+        NavigationManager.NavigateTo("/");
+    }
+
+    public void changeWatched(Movie movie) => movie.Watched = !movie.Watched;
 }

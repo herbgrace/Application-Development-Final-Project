@@ -15,5 +15,7 @@ namespace MovieTracker.Models
         public string Overview { get; set; } = string.Empty;
 
         public string Poster_Path { get; set; } = string.Empty;
+
+        public bool Watched { get; set; } = false;
     }
 }
