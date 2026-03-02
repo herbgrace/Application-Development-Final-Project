@@ -399,3 +399,7 @@ FodyWeavers.xsd
 
 .obj
 .vs
+
+.Components/auth.env
+/MovieTracker/Components/auth.env
+/MovieTracker/auth.env
