@@ -49,6 +49,7 @@ namespace MovieTracker.Controllers
                 foreach (var movie in movies)
                 {
                     // LINQ Query
+                    // If the movie already exists in the db
                     if (currentSaved.Find(m => m.Title == movie.Title) != null)
                     {
                         // Only update the movie that's in the collection
@@ -60,11 +61,12 @@ namespace MovieTracker.Controllers
 
                         // Actually update that john
                         collection.UpdateOne(filter, update);
-                        moviesCopy.Remove(movie);
+                        continue;
                     }
+
+                    // Movie doesn't already exist, add instead of update
+                    collection.InsertOne(movie);
                 }
-                // Add all the new movies
-                collection.InsertMany(moviesCopy);
             } catch (Exception e)
             {
                 Console.WriteLine(e);
