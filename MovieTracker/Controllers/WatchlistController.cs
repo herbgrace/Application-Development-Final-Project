@@ -10,21 +10,30 @@ namespace MovieTracker.Controllers
 {
     static class WatchlistController
     {
-        public static List<Movie> movies = new List<Movie>() {
-            new Movie()
-            {
-                Title = "Guardians of the Galaxy Vol. 3"
-            },
+        public static List<Movie> movies = new List<Movie>();
 
-            new Movie()
-            {
-                Title = "Interstellar"
-            }
-        };
-
-        public static void addMovie(string title)
+        public static bool addMovie(string title)
         {
+            // LINQ QUERY
+            bool duplicate = movies.Find(m => m.Title == title) != null;
+
+            if (duplicate)
+            {
+                return false;
+            }
+
             movies.Add(new Movie() { Title = title });
+            return true;
+        }
+
+        public static void saveMovies()
+        {
+
+        }
+
+        public static List<Movie> retrieveMovies()
+        {
+            return movies;
         }
     }
 }
