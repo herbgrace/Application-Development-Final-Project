@@ -1,40 +1,33 @@
-﻿using System.Net.Http.Headers;
-using System.Text.Json;
+﻿using MovieTracker.Models;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
-using MovieTracker.Models;
 
-namespace MovieTracker.Services
+namespace MovieTracker.Services;
+
+public class TmdbService
 {
-    public class TMDBService
+    private readonly HttpClient _httpClient;
+    private const string ApiKey = "2b00fc34c31c44759fb69b7f8c64b75e"; 
+    private const string BaseUrl = "https://api.themoviedb.org/3/discover/movie";
+
+    public TmdbService(HttpClient httpClient)
     {
-        private readonly HttpClient _httpClient;
-        private const string BASE_URL = "https://api.themoviedb.org/3/";
-        private const string API_KEY = "2b00fc34c31c44759fb69b7f8c64b75e"; 
+        _httpClient = httpClient;
+    }
+    //nuked the whole doc jk just changed the url
+    public async Task<MovieResponse> GetMovies(
+        string genreIds = null,
+        string sortBy = "popularity.desc",
+        int page = 1)
+    {
+        var url = $"{BaseUrl}?api_key={ApiKey}&sort_by={sortBy}&page={page}";
 
-        public TMDBService(HttpClient httpClient)
+        if (!string.IsNullOrEmpty(genreIds))
         {
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri(BASE_URL);
-            _httpClient.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
+            url += $"&with_genres={genreIds}";
         }
 
-        //the holy grail
-        // this method will call the TMDB API to get the popular movies and return a MovieResponse
-        public async Task<MovieResponse?> GetPopularMovies()
-
-        {
-            var response = await _httpClient.GetAsync($"movie/popular?api_key={API_KEY}");
-            var json = await response.Content.ReadAsStringAsync();
-
-            Console.WriteLine("TMDB JSON: " + json); 
-
-            response.EnsureSuccessStatusCode();
-
-            return JsonSerializer.Deserialize<MovieResponse>(
-                json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-            );
-        }
+        return await _httpClient.GetFromJsonAsync<MovieResponse>(url);
     }
 }

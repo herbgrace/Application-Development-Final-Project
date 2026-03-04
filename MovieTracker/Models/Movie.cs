@@ -1,19 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
-namespace MovieTracker.Models
+public class Movie
 {
-    public class Movie
-    {
-        public int Id { get; set; }
+    //fix nameing convention to match api
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
 
-        public string Title { get; set; } = string.Empty;
+    [JsonPropertyName("title")]
+    public string Title { get; set; } = string.Empty;
 
-        public string Overview { get; set; } = string.Empty;
+    [JsonPropertyName("overview")]
+    public string Overview { get; set; } = string.Empty;
 
-        public string Poster_Path { get; set; } = string.Empty;
-    }
+    [JsonPropertyName("release_date")]
+    public string Release_Date { get; set; }
+
+    [JsonPropertyName("genre_ids")]
+    public List<int> Genre_Ids { get; set; }
+
+    [JsonPropertyName("poster_path")]
+    public string Poster_Path { get; set; }
+
+
 }

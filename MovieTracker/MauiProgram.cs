@@ -18,8 +18,8 @@ namespace MovieTracker
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 });
 
-            builder.Services.AddScoped<TMDBService>();
-            builder.Services.AddScoped(sp => new HttpClient());
+            builder.Services.AddSingleton<TmdbService>();
+            builder.Services.AddHttpClient();
 
             builder.Services.AddMauiBlazorWebView();
 

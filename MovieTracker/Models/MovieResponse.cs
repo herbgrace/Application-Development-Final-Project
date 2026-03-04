@@ -8,6 +8,10 @@ namespace MovieTracker.Models
 {
     public class MovieResponse
     {
-        public List<Movie> Results { get; set; } = new List<Movie>();
+        public int Page { get; set; }
+        public List<Movie> Results { get; set; }
+        public int Total_Results { get; set; }
+        public int Total_Pages { get; set; }
     }
+
 }
