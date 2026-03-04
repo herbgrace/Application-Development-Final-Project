@@ -2,6 +2,7 @@
 @inject TmdbService TmdbService
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
+@using MovieTracker.Controllers
 
 
 <h3>Discover Movies</h3>
@@ -50,10 +51,14 @@ else
     <ul>
         @foreach (var movie in movies)
         {
-            <li>
-                <strong>@movie.Title</strong> (@movie.Release_Date)
+            <div class="movie-card">
+                <h3>@movie.Title</h3>
                 <p>@movie.Overview</p>
-            </li>
+
+                <button @onclick="() => AddToWatchlist(movie)">
+                    Add to Watchlist
+                </button>
+            </div>
         }
     </ul>
 
@@ -112,6 +117,13 @@ else
     public void NavigateToHome()
     {
         NavigationManager.NavigateTo("/");
+    }
+    void AddToWatchlist(Movie movie)
+    {
+        if (!WatchlistController.movies.Any(m => m.Title == movie.Title))
+        {
+            WatchlistController.movies.Add(movie);
+        }
     }
 
 

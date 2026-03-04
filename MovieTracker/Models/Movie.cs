@@ -6,8 +6,7 @@ public class Movie
     [JsonPropertyName("id")]
     public int Id { get; set; }
 
-    [JsonPropertyName("title")]
-    public string Title { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
 
     [JsonPropertyName("overview")]
     public string Overview { get; set; } = string.Empty;
@@ -21,5 +20,5 @@ public class Movie
     [JsonPropertyName("poster_path")]
     public string Poster_Path { get; set; }
 
-
+    public bool Watched { get; set; } = false;
 }
