@@ -6,28 +6,48 @@
 <div class="watchlist-header">
     <h1>Watchlist</h1>
     Welcome to your watchlist!
-    <button @onclick="NavigateToHome">Go Back to Home</button>
+    <button @onclick="navigateToHome">Go Back to Home</button>
+    <button @onclick="saveMovies">Save Watchlist</button>
 </div>
 
 <div class="movie-container">
     <ul class="movie-list">
-    @foreach (var movie in WatchlistController.movies)
+        @if (!loaded)
         {
-            <li>
-                <strong>@movie.Title</strong>
-	            <InputCheckbox @bind-Value="movie.Watched" @onchange="() => changeWatched(movie)"></InputCheckbox>
-                <br/>
-            </li>
+            <p>Loading movies...</p>
         }
+        else {
+            @foreach (var movie in WatchlistController.movies)
+                {
+                    <li>
+                        <strong>@movie.Title</strong>
+	                    <InputCheckbox @bind-Value="movie.Watched" @onchange="() => changeWatched(movie)"></InputCheckbox>
+                        <br/>
+                    </li>
+                }
+            }
     </ul>
-    <p>This should be the db URL! -> @Environment.GetEnvironmentVariable("DB_URL") (hopefully no blank before this)
-</p>
 </div>
 
 @code {
-    public void NavigateToHome() {
-        NavigationManager.NavigateTo("/");
+    bool loaded = false;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            WatchlistController.retrieveMovies();
+            loaded = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return;
+        }
     }
 
+    public void navigateToHome() => NavigationManager.NavigateTo("/");
+
     public void changeWatched(Movie movie) => movie.Watched = !movie.Watched;
+
+    public void saveMovies() => WatchlistController.saveMovies();
 }

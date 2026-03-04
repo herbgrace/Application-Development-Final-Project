@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject NavigationManager NavigationManager
+@using MovieTracker.Controllers
 
 <h1>Welcome to Movie Tracker!</h1>
 
@@ -11,6 +12,7 @@
 @code {
     void NavigateToTracker()
     {
+        WatchlistController.retrieveMovies();
         NavigationManager.NavigateTo("/watchlist");
     }
 
