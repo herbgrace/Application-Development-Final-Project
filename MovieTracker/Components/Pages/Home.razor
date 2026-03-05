@@ -4,19 +4,4 @@
 
 <h1>Welcome to Movie Tracker!</h1>
 
-<p>Click below to go to the tracker and fetch movies from TMDB.</p>
-
-<button @onclick="NavigateToTracker">Go to Watchlist</button>
-<button @onclick="NavigateToMovies">Go to Movies</button>
-
-@code {
-    void NavigateToTracker()
-    {
-        WatchlistController.retrieveMovies();
-        NavigationManager.NavigateTo("/watchlist");
-    }
-
-    void NavigateToMovies()
-    {
-        NavigationManager.NavigateTo("/allmovies");
-    }}
+<p>Click the navigation buttons above to see all movies and your tracker.</p>

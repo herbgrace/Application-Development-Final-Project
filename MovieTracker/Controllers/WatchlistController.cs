@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.AspNetCore.Components;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Configuration;
 using MovieTracker.Models;
@@ -120,6 +121,24 @@ namespace MovieTracker.Controllers
             Console.WriteLine("Connected to Mongo!");
 
             return collection;
+        }
+
+        public static void updateFilters(ChangeEventArgs e)
+        {
+            // 0 - all
+            // 1 - unwatched
+            // 2 - watched
+
+            string value = e.Value?.ToString();
+            retrieveMovies();
+
+            if (value == "0")
+            {
+                return;
+            }
+
+            // LINQ QUERY
+            movies = movies.FindAll(m => m.Watched == (value == "2"));
         }
     }
 }

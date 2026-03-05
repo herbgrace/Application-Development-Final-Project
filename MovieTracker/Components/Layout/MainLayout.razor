@@ -1,3 +1,28 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+@using MovieTracker.Controllers;
+
+<button @onclick="NavigateToHome">Home</button>
+<button @onclick="NavigateToTracker">Watchlist</button>
+<button @onclick="NavigateToMovies">All Movies</button>
+
+@code {
+    public void NavigateToHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    void NavigateToTracker()
+    {
+        WatchlistController.retrieveMovies();
+        NavigationManager.NavigateTo("/watchlist");
+    }
+
+    void NavigateToMovies()
+    {
+        NavigationManager.NavigateTo("/allmovies");
+    }
+}
 
 @Body
