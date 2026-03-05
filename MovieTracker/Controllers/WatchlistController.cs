@@ -1,5 +1,6 @@
-﻿using MongoDB.Driver;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Core.Configuration;
 using MovieTracker.Models;
 using System;
 using System.Collections;
@@ -28,29 +29,31 @@ namespace MovieTracker.Controllers
             return true;
         }
 
-        // TODO - saving movies deltes the first entry and isn't working right now, pls fix
+        public static async Task removeMovie(Movie movie)
+        {
+            // Remove locally
+            movies.Remove(movie);
+
+            // Remove from the DB
+            var collection = connectToMongo();
+            var filter = Builders<Movie>.Filter.Eq("Title", movie.Title);
+            collection.DeleteOne(filter);
+        }
+
         public static void saveMovies()
         {
-            string? connectionString = Environment.GetEnvironmentVariable("DB_URL");
-            if (connectionString == null) {
-                Console.WriteLine("Connection String is null, cannot save movies");
-                return;
-            }
-
             try
             {
-                var client = new MongoClient(connectionString);
-                var db = client.GetDatabase("MovieTrackerDB");
-                var collection = db.GetCollection<Movie>("SavedMovies");
-                Console.WriteLine("Connected to Mongo!");
-
+                var collection = connectToMongo();
                 var currentSaved = collection.Find(Builders<Movie>.Filter.Empty).ToList();
-                var moviesCopy = movies;
+
                 foreach (var movie in movies)
                 {
                     // LINQ Query
+                    var duplicate = currentSaved.Find(m => m.Title == movie.Title);
+
                     // If the movie already exists in the db
-                    if (currentSaved.Find(m => m.Title == movie.Title) != null)
+                    if (duplicate != null)
                     {
                         // Only update the movie that's in the collection
                         var filter = Builders<Movie>.Filter.Eq("Title", movie.Title);
@@ -74,22 +77,11 @@ namespace MovieTracker.Controllers
             }
         }
 
-        public static void retrieveMovies()
+        public static async Task retrieveMovies()
         {
-            string? connectionString = Environment.GetEnvironmentVariable("DB_URL");
-            if (connectionString == null)
-            {
-                Console.WriteLine("Connection String is null, cannot retrieve movies");
-                return;
-            }
-
             try
             {
-                var client = new MongoClient(connectionString);
-                var db = client.GetDatabase("MovieTrackerDB");
-                var collection = db.GetCollection<Movie>("SavedMovies");
-                Console.WriteLine("Connected to Mongo!");
-
+                var collection = connectToMongo();
                 var savedMovies = collection.Find(Builders<Movie>.Filter.Empty).ToList();
 
                 foreach (Movie movie in savedMovies) {
@@ -112,6 +104,22 @@ namespace MovieTracker.Controllers
                 Console.WriteLine(e);
                 return;
             }
+        }
+
+        private static IMongoCollection<Movie> connectToMongo()
+        {
+            string? connectionString = Environment.GetEnvironmentVariable("DB_URL");
+            if (connectionString == null)
+            {
+                throw new Exception("Mongo Connection string is null");
+            }
+
+            var client = new MongoClient(connectionString);
+            var db = client.GetDatabase("MovieTrackerDB");
+            var collection = db.GetCollection<Movie>("SavedMovies");
+            Console.WriteLine("Connected to Mongo!");
+
+            return collection;
         }
     }
 }

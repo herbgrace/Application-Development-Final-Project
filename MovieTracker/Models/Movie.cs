@@ -12,7 +12,7 @@ public class Movie
     [JsonPropertyName("id")]
     public int Id { get; set; }
 
-        public string Title { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
 
     [JsonPropertyName("overview")]
     public string Overview { get; set; } = string.Empty;

@@ -20,6 +20,7 @@
             @foreach (var movie in WatchlistController.movies)
                 {
                     <li>
+                        <button @onclick="() => removeMovie(movie)">Remove</button>
                         <strong>@movie.Title</strong>
 	                    <InputCheckbox @bind-Value="movie.Watched" @onchange="() => changeWatched(movie)"></InputCheckbox>
                         <br/>
@@ -33,21 +34,15 @@
     bool loaded = false;
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            WatchlistController.retrieveMovies();
-            loaded = true;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            return;
-        }
+        await WatchlistController.retrieveMovies();
+        loaded = true;
     }
 
     public void navigateToHome() => NavigationManager.NavigateTo("/");
 
     public void changeWatched(Movie movie) => movie.Watched = !movie.Watched;
+
+    public void removeMovie(Movie movie) => WatchlistController.removeMovie(movie);
 
     public void saveMovies() => WatchlistController.saveMovies();
 }
