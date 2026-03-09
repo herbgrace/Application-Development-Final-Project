@@ -3,9 +3,15 @@
 
 @using MovieTracker.Controllers;
 
-<button @onclick="NavigateToHome">Home</button>
-<button @onclick="NavigateToTracker">Watchlist</button>
-<button @onclick="NavigateToMovies">All Movies</button>
+<div class="page">
+    <header class="top-navigation">
+
+        <button @onclick="NavigateToHome">Home</button>
+        <button @onclick="NavigateToTracker">Watchlist</button>
+        <button @onclick="NavigateToMovies">All Movies</button>
+
+    </header>
+</div>
 
 @code {
     public void NavigateToHome()

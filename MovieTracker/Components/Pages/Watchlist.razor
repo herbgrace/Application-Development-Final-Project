@@ -5,7 +5,6 @@
 
 <div class="watchlist-header">
     <h1>Watchlist</h1>
-    Welcome to your watchlist!
     <div class="filters">
         <label>Filter: </label>
         <select @onchange="updateFilters">
@@ -14,27 +13,38 @@
             <option value="2">Watched</option>
         </select>
     </div>
-    <button @onclick="saveMovies">Save Watchlist</button>
+    <button class="btn-save" @onclick="saveMovies">Save Watchlist</button>
 </div>
 
 <div class="movie-container">
-    <ul class="movie-list">
-        @if (!loaded)
-        {
-            <p>Loading movies...</p>
-        }
-        else {
+    @if (!loaded)
+    {
+        <p>Loading movies...</p>
+    }
+    else
+    {
+        <ul class="movie-list">
             @foreach (var movie in WatchlistController.movies)
-                {
-                    <li>
-                        <button @onclick="() => removeMovie(movie)">Remove</button>
+            {
+                <li class="movie-card">
+                    <div @onclick="() => NavigateToDetails(movie.Id)" style="cursor:pointer;">
+                        @if (!string.IsNullOrEmpty(movie.Poster_Path))
+                        {
+                            <img src="https://image.tmdb.org/t/p/w500/@movie.Poster_Path" alt="@movie.Title" />
+                        }
+                    </div>
+
+                    <div class="movie-info">
                         <strong>@movie.Title</strong>
-	                    <InputCheckbox @bind-Value="movie.Watched" @onchange="() => changeWatched(movie)"></InputCheckbox>
-                        <br/>
-                    </li>
-                }
+                        <br />
+                        <button class="btn-remove" @onclick="() => removeMovie(movie)">Remove</button>
+                        <InputCheckbox @bind-Value="movie.Watched" @onchange="() => changeWatched(movie)"></InputCheckbox>
+                        <span>Watched</span>
+                    </div>
+                </li>
             }
-    </ul>
+        </ul>
+    }
 </div>
 
 @code {
@@ -54,4 +64,9 @@
     public void saveMovies() => WatchlistController.saveMovies();
 
     public void updateFilters(ChangeEventArgs e) => WatchlistController.updateFilters(e);
+
+    private void NavigateToDetails(int movieId)
+    {
+        NavigationManager.NavigateTo($"/moviedetails/{movieId}");
+    }
 }

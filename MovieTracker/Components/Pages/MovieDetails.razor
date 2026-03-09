@@ -1,0 +1,44 @@
+﻿@page "/moviedetails/{MovieId:int}"
+@using MovieTracker.Models
+@inject MovieTracker.Services.TmdbService TmdbService
+@inject NavigationManager NavigationManager
+@using MovieTracker.Controllers
+
+@if (movie == null)
+{
+    <p>Loading movie details...</p>
+}
+else
+{
+    <div class="details-container">
+        <button class="btn-back" @onclick='() => NavigationManager.NavigateTo("/allmovies")'>Back</button>
+        
+        <div class="details-layout">
+            <img src="https://image.tmdb.org/t/p/w500/@movie.Poster_Path" />
+            <div>
+                <h1>@movie.Title</h1>
+                <p>@movie.Overview</p>
+            </div>
+            <button class="btn-add"  @onclick="() => AddToWatchlist(movie)"> + Watchlist
+                    </button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int MovieId { get; set; }
+    private Movie movie;
+
+    protected override async Task OnInitializedAsync()
+    {
+        movie = await TmdbService.GetMovieDetails(MovieId);
+    }
+
+    void AddToWatchlist(Movie movie)
+    {
+        if (!WatchlistController.movies.Any(m => m.Title == movie.Title))
+        {
+            WatchlistController.movies.Add(movie);
+        }
+    }
+}

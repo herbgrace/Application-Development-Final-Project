@@ -5,8 +5,17 @@
 @using MovieTracker.Controllers
 
 
-<h3>Discover Movies</h3>
-<div class="filters"> 
+<h1>Discover Movies</h1>
+
+<div class="filters">
+    <div class="search-box">
+        <input @bind="_searchTerm"
+               @onkeyup="HandleKeyUp"
+               placeholder="Search for a movie..."
+               class="search-input" />
+        <button @onclick="ApplyFilters" class="btn-search">Search</button>
+    </div>
+
      <label>Genre:</label>
     <select @bind="_selectedGenre">
         <option value="28">Action</option>
@@ -29,6 +38,7 @@
         <option value="10752">War</option>
         <option value="37">Western</option>
     </select>  
+
     <label>Sort By:</label>
     <select @bind="_selectedSort"> 
         <option value="popularity.desc">Most Popular</option>
@@ -47,19 +57,34 @@
 }
 else
 {
-    <ul>
+    <div class="movie-grid">
         @foreach (var movie in movies)
         {
-            <div class="movie-card">
-                <h3>@movie.Title</h3>
-                <p>@movie.Overview</p>
 
-                <button @onclick="() => AddToWatchlist(movie)">
-                    Add to Watchlist
-                </button>
+            <div class="movie-card" @onclick="() => NavigateToDetails(movie.Id)" style="cursor: pointer;">
+                <div class="poster-container">
+                    @if (!string.IsNullOrEmpty(movie.Poster_Path))
+                    {
+                        <img src="https://image.tmdb.org/t/p/w500/@movie.Poster_Path" alt="@movie.Title" />
+                    }
+                    else
+                    {
+                        <div class="no-image">No Poster</div>
+                    }
+                </div>
+                <div class="movie-card-body">
+                    <h3>@movie.Title</h3>
+                    <p>@movie.Overview</p>
+                  
+                    <button class="btn-add"
+                            @onclick:stopPropagation="true"
+                            @onclick="() => AddToWatchlist(movie)">
+                        + Watchlist
+                    </button>
+                </div>
             </div>
         }
-    </ul>
+</div>
 
     <div class="pagination">
         <button @onclick="PreviousPage" disabled="@(_currentPage == 1)">Previous</button>
@@ -71,47 +96,67 @@ else
 
     @code {
     private List<Movie> movies;
-
+    private string _searchTerm = "";
     private string _selectedGenre = "";
     private string _selectedSort = "popularity.desc";
-
-
     private int _currentPage = 1;
     private int _totalPages = 1;
+    private bool _isLoading = false; 
 
     protected override async Task OnInitializedAsync()
     {
         await LoadMovies(_currentPage);
     }
 
+    private async Task HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await ApplyFilters();
+    }
+
     private async Task LoadMovies(int page = 1)
     {
-        var response = await TmdbService.GetMovies(genreIds: _selectedGenre, sortBy: _selectedSort, page: page);
-        movies = response.Results;
-        _currentPage = response.Page;
-        _totalPages = response.Total_Pages;
+        _isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            MovieResponse response;
+
+            if (!string.IsNullOrWhiteSpace(_searchTerm))
+            {
+                response = await TmdbService.SearchMovies(_searchTerm, page);
+            }
+            else
+            {
+                response = await TmdbService.GetMovies(genreIds: _selectedGenre, sortBy: _selectedSort, page: page);
+            }
+
+            movies = response?.Results ?? new List<Movie>();
+            _currentPage = response?.Page ?? 1;
+            _totalPages = response?.Total_Pages ?? 1;
+        } 
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        finally
+        {
+            _isLoading = false;
+            await JSRuntime.InvokeVoidAsync("window.scrollTo", 0, 0);
+        }
     }
 
     private async Task ApplyFilters()
     {
-        _currentPage = 1; 
+        _currentPage = 1;
         await LoadMovies(_currentPage);
     }
 
-    private async Task NextPage()
+    private async Task NextPage() => await LoadMovies(_currentPage + 1);
+    private async Task PreviousPage() => await LoadMovies(_currentPage - 1);
+    private void NavigateToDetails(int movieId)
     {
-        if (_currentPage < _totalPages)
-        {
-            await LoadMovies(_currentPage + 1);
-        }
-    }
-
-    private async Task PreviousPage()
-    {
-        if (_currentPage > 1)
-        {
-            await LoadMovies(_currentPage - 1);
-        }
+        NavigationManager.NavigateTo($"/moviedetails/{movieId}");
     }
 
     void AddToWatchlist(Movie movie)
@@ -121,8 +166,4 @@ else
             WatchlistController.movies.Add(movie);
         }
     }
-
-
-    //i suck: add scroll to top when page changes
-}
-}
+}}
